@@ -1,18 +1,24 @@
 package com.itt.internship.java.batch25.entity;
 
+import java.time.LocalDateTime;
+
 public class Book extends Asset {
     private String author;
-    private String dateOfPublish;
+    private int dateOfPublish;
 
-
-    public Book(int serialNumber, String name, String author, String dateOfPublish) {
-        super(serialNumber, name);
+    public Book(int serialNumber, String name, String description, LocalDateTime createdate, LocalDateTime updatedate, String author, int dateOfPublish) {
+        super(serialNumber, name, description, createdate, updatedate);
         this.author = author;
         this.dateOfPublish = dateOfPublish;
     }
+
     public String getAuthor() {
         return author;
     }
+
+
+
+
 
     @Override
     public void display() {

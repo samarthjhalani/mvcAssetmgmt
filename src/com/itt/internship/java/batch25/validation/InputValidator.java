@@ -6,6 +6,6 @@ public class InputValidator {
     }
 
     public static boolean isValidRole(String role) {
-        return role.equals("admin") || role.equals("manager") || role.equals("viewer");
+        return role.equals("admin") || role.equals("user");
     }
 }

@@ -6,7 +6,7 @@ import com.itt.internship.java.batch25.entity.Software;
 import com.itt.internship.java.batch25.entity.User;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,7 +22,7 @@ public class AssetService {
     public void addAsset(Asset asset) {
         if (!isAuthorized("admin", "manager")) return;
         assetList.add(asset);
-        System.out.println("Asset added successfully: " + asset.getName());
+        System.out.println("✅ Asset added successfully: " + asset.getName());
     }
 
     public Asset searchAsset(int serialNumber) {
@@ -39,12 +39,14 @@ public class AssetService {
 
         for (int i = 0; i < assetList.size(); i++) {
             if (assetList.get(i).getSerialNumber() == serialNumber) {
+                updatedAsset.setUpdatedDate(LocalDateTime.now());
                 assetList.set(i, updatedAsset);
-                System.out.println("Asset updated successfully.");
+                System.out.println("✅ Asset updated successfully.");
                 return true;
             }
         }
-        System.out.println("Asset not found for update.");
+
+        System.out.println("❌ Asset not found for update.");
         return false;
     }
 
@@ -56,17 +58,17 @@ public class AssetService {
             Asset asset = iterator.next();
             if (asset.getSerialNumber() == serialNumber) {
                 iterator.remove();
-                System.out.println("Asset deleted successfully.");
+                System.out.println("✅ Asset deleted successfully.");
                 return true;
             }
         }
-        System.out.println("Asset not found for deletion.");
+        System.out.println("❌ Asset not found for deletion.");
         return false;
     }
 
     public void listAssets() {
         if (assetList.isEmpty()) {
-            System.out.println("No assets available.");
+            System.out.println("📭 No assets available.");
         } else {
             for (Asset asset : assetList) {
                 asset.display();
@@ -75,9 +77,7 @@ public class AssetService {
         }
     }
 
-    public List<Asset> getAllAssets() {
-        return assetList;
-    }
+
 
     private boolean isAuthorized(String... allowedRoles) {
         for (String role : allowedRoles) {
@@ -85,43 +85,38 @@ public class AssetService {
                 return true;
             }
         }
-        System.out.println("Access Denied: " + currentUser.getRole() + " is not allowed to perform this action.");
+        System.out.println("⛔ Access Denied: " + currentUser.getRole() + " is not allowed to perform this action.");
         return false;
     }
 
     public void filterBooksByAuthor(String authorName) {
         boolean found = false;
         for (Asset asset : assetList) {
-            if (asset instanceof Book) {
-                Book book = (Book) asset;
-                if (book.getAuthor().equalsIgnoreCase(authorName)) {
-                    book.display();
-                    System.out.println("---------------------------");
-                    found = true;
-                }
+            if (asset instanceof Book book && book.getAuthor().equalsIgnoreCase(authorName)) {
+                book.display();
+                System.out.println("---------------------------");
+                found = true;
             }
         }
         if (!found) {
-            System.out.println("No books found by author: " + authorName);
+            System.out.println("📚 No books found by author: " + authorName);
         }
     }
-
 
     public void checkForExpiringAssets() {
         LocalDate today = LocalDate.now();
 
         for (Asset asset : assetList) {
-            if (asset instanceof Software) {
-                Software software = (Software) asset;
-                LocalDate expiryDate = software.getExpiryDateAsLocalDate();
-                long daysLeft = ChronoUnit.DAYS.between(today, expiryDate);
+            if (asset instanceof Software software) {
+                LocalDate expiryDate = software.getExpiryDate();
+                long daysLeft = expiryDate.toEpochDay() - today.toEpochDay();
 
                 if (daysLeft <= 15 && daysLeft >= 0) {
                     System.out.println("⚠️ ALERT: Software '" + software.getName() + "' (Serial No: "
-                            + software.getSerialNumber() + ") will expire in " + daysLeft + " day(s) [Expiry: " + software.getExpiryDate() + "]");
+                            + software.getSerialNumber() + ") will expire in " + daysLeft + " day(s). Expiry: " + expiryDate);
                 } else if (daysLeft < 0) {
                     System.out.println("❌ WARNING: Software '" + software.getName() + "' (Serial No: "
-                            + software.getSerialNumber() + ") has already expired on " + software.getExpiryDate());
+                            + software.getSerialNumber() + ") has already expired on " + expiryDate);
                 }
             }
         }

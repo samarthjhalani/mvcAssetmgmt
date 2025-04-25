@@ -2,7 +2,8 @@ package com.itt.internship.java.batch25.validation;
 
 import com.itt.internship.java.batch25.entity.*;
 import com.itt.internship.java.batch25.service.AssetService;
-
+import com.itt.internship.java.batch25.service.UserService;
+import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class Main {
@@ -11,21 +12,29 @@ public class Main {
 
         System.out.print("Enter your username: ");
         String uname = sc.nextLine();
-        System.out.print("Enter your role (admin / manager / viewer): ");
+
+        System.out.print("Enter Last Name: ");
+        String LastName = sc.nextLine();
+
+        System.out.println("Enter the password");
+        String password = sc.nextLine();
+
+        System.out.print("Enter your role (admin / user ): ");
         String role = sc.next().toLowerCase();
+        sc.nextLine();
 
         if (!InputValidator.isValidRole(role)) {
             System.out.println("Invalid role. Exiting...");
             return;
         }
 
-        User currentUser = new User(uname, role);
-        AssetService service = new AssetService(currentUser);
+        User currentUser = new User(uname, password, role, LastName);
 
-        System.out.println("Welcome, " + uname + " (" + role + ")");
+        AssetService assetService = new AssetService(currentUser);
+        UserService userService = new UserService();
 
-        // Check for expiring assets at the start of the session
-        service.checkForExpiringAssets();
+        System.out.println("Welcome, " + uname + " " + LastName + " (" + role + ")");
+        assetService.checkForExpiringAssets();
 
         boolean exit = false;
         while (!exit) {
@@ -36,49 +45,62 @@ public class Main {
             System.out.println("4. Delete Asset");
             System.out.println("5. List All Assets");
             System.out.println("6. Filter Books by Author Name");
-            System.out.println("7. Logout/Exit");
+            System.out.println("7. List All Users");
+            System.out.println("8. Logout/Exit");
             System.out.print("Enter your choice: ");
+
             int choice = sc.nextInt();
             sc.nextLine();
 
             switch (choice) {
                 case 1:
-                    if (currentUser.getRole().equalsIgnoreCase("admin") || currentUser.getRole().equalsIgnoreCase("manager")) {
+                    if (role.equals("admin") || role.equals("user")) {
                         System.out.println("Select Asset Type (1. Book, 2. Hardware, 3. Software License): ");
                         int type = sc.nextInt();
                         sc.nextLine();
 
                         System.out.print("Enter Asset Name: ");
                         String name = sc.nextLine();
+
                         System.out.print("Enter Serial Number: ");
                         int serialNumber = sc.nextInt();
                         sc.nextLine();
+
                         System.out.print("Enter Description: ");
                         String description = sc.nextLine();
 
+                        LocalDateTime now = LocalDateTime.now();
                         Asset asset = null;
+
                         switch (type) {
                             case 1:
                                 System.out.print("Enter Author Name: ");
                                 String author = sc.nextLine();
-                                asset = new Book(serialNumber, name, description, author);
+                                System.out.print("Enter Date of Publish (Year): ");
+                                int dateOfPublish = sc.nextInt();
+                                sc.nextLine();
+                                asset = new Book(serialNumber, name, description, now, now, author, dateOfPublish);
                                 break;
                             case 2:
                                 System.out.print("Enter Hardware Type: ");
                                 String hardwareType = sc.nextLine();
-                                asset = new Hardware(serialNumber, name, description, hardwareType);
+                                System.out.print("Enter Purchase Date: ");
+                                String purchaseDate = sc.nextLine();
+                                asset = new Hardware(serialNumber, name, description, now, now, hardwareType, purchaseDate);
                                 break;
                             case 3:
                                 System.out.print("Enter License Key: ");
                                 String licenseKey = sc.nextLine();
-                                asset = new Software(serialNumber, name, description, licenseKey,ex);
+                                System.out.print("Enter Expiry Date (yyyy-MM-dd): ");
+                                String expiryDate = sc.nextLine();
+                                asset = new Software(serialNumber, name, description, now, now, licenseKey, expiryDate);
                                 break;
                             default:
                                 System.out.println("Invalid asset type.");
                         }
 
                         if (asset != null) {
-                            service.addAsset(asset);
+                            assetService.addAsset(asset);
                         }
                     } else {
                         System.out.println("You don't have permission to add assets.");
@@ -88,7 +110,8 @@ public class Main {
                 case 2:
                     System.out.print("Enter Asset Serial Number to Search: ");
                     int searchSerial = sc.nextInt();
-                    Asset foundAsset = service.searchAsset(searchSerial);
+                    sc.nextLine();
+                    Asset foundAsset = assetService.searchAsset(searchSerial);
                     if (foundAsset != null) {
                         foundAsset.display();
                     } else {
@@ -97,44 +120,53 @@ public class Main {
                     break;
 
                 case 3:
-                    if (currentUser.getRole().equalsIgnoreCase("admin") || currentUser.getRole().equalsIgnoreCase("manager")) {
+                    if (role.equals("admin") || role.equals("user")) {
                         System.out.println("Select Asset Type (1. Book, 2. Hardware, 3. Software License): ");
                         int type = sc.nextInt();
                         sc.nextLine();
 
                         System.out.print("Enter Asset Name: ");
                         String name = sc.nextLine();
+
                         System.out.print("Enter Serial Number: ");
                         int serialNumber = sc.nextInt();
-                        sc.nextLine();  // Consume newline
+                        sc.nextLine();
+
                         System.out.print("Enter Description: ");
                         String description = sc.nextLine();
 
                         Asset updatedAsset = null;
+                        LocalDateTime now = LocalDateTime.now();
+
                         switch (type) {
                             case 1:
                                 System.out.print("Enter Author Name: ");
                                 String author = sc.nextLine();
-                                updatedAsset = new Book(serialNumber, name, description, author);
+                                System.out.print("Enter Date of Publish (Year): ");
+                                int dateOfPublish = sc.nextInt();
+                                sc.nextLine();
+                                updatedAsset = new Book(serialNumber, name, description, now, now, author, dateOfPublish);
                                 break;
                             case 2:
                                 System.out.print("Enter Hardware Type: ");
                                 String hardwareType = sc.nextLine();
-                                updatedAsset = new Hardware(serialNumber, name, description, hardwareType);
+                                System.out.print("Enter Purchase Date: ");
+                                String purchaseDate = sc.nextLine();
+                                updatedAsset = new Hardware(serialNumber, name, description, now, now, hardwareType, purchaseDate);
                                 break;
                             case 3:
                                 System.out.print("Enter License Key: ");
                                 String licenseKey = sc.nextLine();
                                 System.out.print("Enter Expiry Date (yyyy-MM-dd): ");
-                                String expiryDate = sc.nextLine();  // Capturing expiry date as a string
-                                updatedAsset = new Software(serialNumber, name, description, licenseKey, expiryDate);
+                                String expiryDate = sc.nextLine();
+                                updatedAsset = new Software(serialNumber, name, description, now, now, licenseKey, expiryDate);
                                 break;
                             default:
                                 System.out.println("Invalid asset type.");
                         }
 
                         if (updatedAsset != null) {
-                            service.updateAsset(serialNumber, updatedAsset);
+                            assetService.updateAsset(serialNumber, updatedAsset);
                         }
                     } else {
                         System.out.println("You don't have permission to update assets.");
@@ -142,26 +174,31 @@ public class Main {
                     break;
 
                 case 4:
-                    if (currentUser.getRole().equalsIgnoreCase("admin")) {
+                    if (role.equals("admin")) {
                         System.out.print("Enter Asset Serial Number to Delete: ");
                         int deleteSerial = sc.nextInt();
-                        service.deleteAsset(deleteSerial);
+                        sc.nextLine();
+                        assetService.deleteAsset(deleteSerial);
                     } else {
                         System.out.println("You don't have permission to delete assets.");
                     }
                     break;
 
                 case 5:
-                    service.listAssets();
+                    assetService.listAssets();
                     break;
 
                 case 6:
                     System.out.print("Enter Author Name to Filter Books: ");
                     String authorName = sc.nextLine();
-                    service.filterBooksByAuthor(authorName);
+                    assetService.filterBooksByAuthor(authorName);
                     break;
 
                 case 7:
+                    userService.listUsers();
+                    break;
+
+                case 8:
                     System.out.println("Logging out...");
                     exit = true;
                     break;
