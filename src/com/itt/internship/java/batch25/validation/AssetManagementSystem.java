@@ -19,7 +19,6 @@ public class AssetManagementSystem {
     public static void main(String[] args) {
         loadDummyUsers();
         login();
-
         assetService = new AssetService(scanner, userSession);
 
         while (true) {
@@ -40,16 +39,51 @@ public class AssetManagementSystem {
         System.out.println("==== Welcome to Asset Management System ====");
 
         while (true) {
-            System.out.print("Enter Username: ");
-            String username = scanner.nextLine();
-            if (users.containsKey(username)) {
-                userSession = new UserSession(users.get(username));
-                System.out.println("Login successful! Welcome, " + userSession.getUser().getFirstName() + " (" + userSession.getUser().getRole() + ")");
-                break;
+            System.out.println("\n1. Login");
+            System.out.println("2. Register");
+            System.out.print("Enter your choice: ");
+            String choice = scanner.nextLine();
+
+            if (choice.equals("1")) {
+                System.out.print("Enter Username: ");
+                String username = scanner.nextLine();
+                if (users.containsKey(username)) {
+                    userSession = new UserSession(users.get(username));
+                    System.out.println("Login successful! Welcome, " + userSession.getUser().getFirstName() + " (" + userSession.getUser().getRole() + ")");
+                    break;
+                } else {
+                    System.out.println("Invalid Username. Try again!");
+                }
+            } else if (choice.equals("2")) {
+                registerNewUser();
             } else {
-                System.out.println("Invalid Username. Try again!");
+                System.out.println("Invalid choice. Try again!");
             }
         }
+    }
+
+    private static void registerNewUser() {
+        System.out.print("Enter Username: ");
+        String username = scanner.nextLine();
+        if (users.containsKey(username)) {
+            System.out.println("Username already exists. Please choose a different username.");
+            return;
+        }
+
+        System.out.print("Enter First Name: ");
+        String firstName = scanner.nextLine();
+        System.out.print("Enter Last Name: ");
+        String lastName = scanner.nextLine();
+        System.out.print("Enter Role (ADMIN/USER): ");
+        String role = scanner.nextLine().toUpperCase();
+
+        if (!role.equals(RoleConstants.ADMIN) && !role.equals(RoleConstants.USER)) {
+            System.out.println("Invalid role. Only ADMIN or USER allowed.");
+            return;
+        }
+
+        users.put(username, new User(firstName, lastName, role));
+        System.out.println("Registration successful! You can now login.");
     }
 
     private static void showMenu() {
