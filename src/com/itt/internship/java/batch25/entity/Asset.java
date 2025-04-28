@@ -3,21 +3,23 @@ package com.itt.internship.java.batch25.entity;
 import java.time.LocalDateTime;
 
 public abstract class Asset {
-    private int serialNumber;
-    private String name;
-    private String description;
-    private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
+    protected String serialNumber;
+    public String name;
+    protected String createdBy;
+    protected LocalDateTime createdAt;
+    protected LocalDateTime updatedAt;
 
-    public Asset(int serialNumber, String name, String description, LocalDateTime createdDate, LocalDateTime updatedDate) {
+    public Asset(String serialNumber, String name, String createdBy) {
         this.serialNumber = serialNumber;
         this.name = name;
-        this.description = description;
-        this.createdDate = createdDate;
-        this.updatedDate = updatedDate;
+        this.createdBy = createdBy;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    public int getSerialNumber() {
+    public abstract String getDetails();
+
+    public String getSerialNumber() {
         return serialNumber;
     }
 
@@ -25,32 +27,19 @@ public abstract class Asset {
         return name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
-    public LocalDateTime getCreatedDate() {
-        return createdDate;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public LocalDateTime getUpdatedDate() {
-        return updatedDate;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdatedDate(LocalDateTime updatedDate) {
-        this.updatedDate = updatedDate;
-    }
-
-    public abstract void display();
-
-    @Override
-    public String toString() {
-        return "Asset {" +
-                "serialNumber=" + serialNumber +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", createdDate=" + createdDate +
-                ", updatedDate=" + updatedDate +
-                '}';
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

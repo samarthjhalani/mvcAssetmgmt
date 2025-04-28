@@ -1,24 +1,23 @@
 package com.itt.internship.java.batch25.entity;
 
 public class User {
-    private String username;
-    private String password;
-
+    private String firstName;
     private String lastName;
-    private String role;
+    private String role; // Admin or User
 
-    public User(String username, String password, String lastName, String role) {
-        this.username = username;
-        this.password = String.valueOf(password);
-
+    public User(String firstName, String lastName, String role) {
+        this.firstName = firstName;
         this.lastName = lastName;
-        this.role = role.toLowerCase();
+        this.role = role;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFirstName() {
+        return firstName;
     }
 
+    public String getLastName() {
+        return lastName;
+    }
 
     public String getRole() {
         return role;

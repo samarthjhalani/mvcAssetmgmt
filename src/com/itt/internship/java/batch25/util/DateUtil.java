@@ -1,12 +1,12 @@
 package com.itt.internship.java.batch25.util;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class DateUtil {
-    public static Date parseDate(String dateStr) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        return sdf.parse(dateStr);
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+
+    public static LocalDate parseDate(String dateStr) {
+        return LocalDate.parse(dateStr, formatter);
     }
 }

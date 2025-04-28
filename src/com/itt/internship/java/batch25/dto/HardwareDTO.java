@@ -1,37 +1,23 @@
 package com.itt.internship.java.batch25.dto;
 
-public class HardwareDTO {
-    private final int serialNumber;
-    private final String name;
-    private final String brand;
-    private final String warrantyPeriod;
-    private final String purchaseDate;
+public class HardwareDTO extends AssetDTO {
+    private String manufacturer;
+    private String modelNumber;
 
-    public HardwareDTO(int serialNumber, String name, String brand, String warrantyPeriod, String purchaseDate) {
-        this.serialNumber = serialNumber;
-        this.name = name;
-        this.brand = brand;
-        this.warrantyPeriod = warrantyPeriod;
-        this.purchaseDate = purchaseDate;
+    // Getters and Setters
+    public String getManufacturer() {
+        return manufacturer;
     }
 
-    public int getSerialNumber() {
-        return serialNumber;
+    public void setManufacturer(String manufacturer) {
+        this.manufacturer = manufacturer;
     }
 
-    public String getName() {
-        return name;
+    public String getModelNumber() {
+        return modelNumber;
     }
 
-    public String getBrand() {
-        return brand;
-    }
-
-    public String getWarrantyPeriod() {
-        return warrantyPeriod;
-    }
-
-    public String getPurchaseDate() {
-        return purchaseDate;
+    public void setModelNumber(String modelNumber) {
+        this.modelNumber = modelNumber;
     }
 }
