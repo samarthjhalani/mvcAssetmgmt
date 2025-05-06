@@ -1,6 +1,5 @@
 package com.itt.internship.java.batch25.service;
 
-import com.itt.internship.java.batch25.constant.RoleConstants;
 import com.itt.internship.java.batch25.dto.UserSession;
 import com.itt.internship.java.batch25.entity.*;
 
@@ -30,7 +29,7 @@ public class AssetService {
         String type = scanner.nextLine();
 
         switch (type) {
-            case "Book":
+            case "book":
                 addBook();
                 break;
             case "SoftwareLicense":
